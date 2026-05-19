@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>Manage Skills</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between mb-4">
+            <h2 class="fw-bold">Manage Skills Showcase</h2>
+            <a href="/admin/dashboard" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm mb-5">
+            <h5 class="fw-bold mb-3">Add New Skill</h5>
+            <form action="/admin/skills/add" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="name" class="form-control" placeholder="Skill Name (e.g. Python, HTML)" required>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="category" class="form-select" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="Frontend">Frontend Development</option>
+                            <option value="Backend">Backend Development</option>
+                            <option value="Database">Database Management</option>
+                            <option value="Others">Others / Tools</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" name="display_order" class="form-control" placeholder="Display Order (e.g. 1, 2)">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3 fw-bold">Save Skill</button>
+            </form>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm">
+            <table class="table align-middle">
+                <thead>
+                    <tr><th>Skill Name</th><th>Category</th><th>Order</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {% for skill in skills %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ skill['name'] }}</td>
+                        <td><span class="badge bg-info text-dark">{{ skill['category'] }}</span></td>
+                        <td>{{ skill['display_order'] }}</td>
+                        <td><a href="/admin/skills/delete/{{ skill['id'] }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this skill?')"><i class="fas fa-trash"></i></a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center text-muted">No skills added yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>Manage Projects</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between mb-4">
+            <h2 class="fw-bold">Manage Projects Portfolio</h2>
+            <a href="/admin/dashboard" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm mb-5">
+            <h5 class="fw-bold mb-3">Add New Project</h5>
+            <form action="/admin/projects/add" method="POST" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-md-6"><input type="text" name="title" class="form-control" placeholder="Project Title" required></div>
+                    <div class="col-md-6"><input type="file" name="image" class="form-control" required></div>
+                    <div class="col-md-6"><input type="url" name="live_url" class="form-control" placeholder="Live Demo URL"></div>
+                    <div class="col-md-6"><input type="url" name="github_url" class="form-control" placeholder="GitHub URL"></div>
+                    <div class="col-12"><textarea name="description" class="form-control" rows="3" placeholder="Project Description" required></textarea></div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3fw-bold">Upload & Save Project</button>
+            </form>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm">
+            <table class="table align-middle">
+                <thead>
+                    <tr><th>Image</th><th>Title</th><th>Description</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td><img src="{{ url_for('static', filename='uploads/' + project['image']) if project['image'] else 'https://via.placeholder.com/50' }}" width="60" class="rounded"></td>
+                        <td class="fw-bold">{{ project['title'] }}</td>
+                        <td class="text-muted small">{{ project['description'] }}</td>
+                        <td><a href="/admin/projects/delete/{{ project['id'] }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center text-muted">No projects found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

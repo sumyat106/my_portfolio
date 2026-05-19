@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>Manage Timeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between mb-4">
+            <h2 class="fw-bold">Manage Experience & Education</h2>
+            <a href="/admin/dashboard" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm mb-5">
+            <h5 class="fw-bold mb-3">Add New Timeline Event</h5>
+            <form action="/admin/timeline/add" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-4"><input type="text" name="title" class="form-control" placeholder="Role/Degree (e.g. Web Developer, BSc)" required></div>
+                    <div class="col-md-4"><input type="text" name="organization" class="form-control" placeholder="Company/School (e.g. ABC Co, University)" required></div>
+                    <div class="col-md-4">
+                        <select name="type" class="form-select" required>
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="experience">Work Experience</option>
+                            <option value="education">Education</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6"><input type="text" name="start_date" class="form-control" placeholder="Start Date (e.g. Jan 2024)" required></div>
+                    <div class="col-md-6"><input type="text" name="end_date" class="form-control" placeholder="End Date (e.g. Present, Dec 2025)"></div>
+                    <div class="col-12"><textarea name="description" class="form-control" rows="3" placeholder="Brief details..."></textarea></div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3 fw-bold">Save Event</button>
+            </form>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm">
+            <table class="table align-middle">
+                <thead>
+                    <tr><th>Type</th><th>Title</th><th>Organization</th><th>Duration</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in timelines %}
+                    <tr>
+                        <td>
+                            <span class="badge {{ 'bg-success' if item['type'] == 'experience' else 'bg-warning text-dark' }}">
+                                {{ item['type'].upper() }}
+                            </span>
+                        </td>
+                        <td class="fw-bold">{{ item['title'] }}</td>
+                        <td>{{ item['organization'] }}</td>
+                        <td><small>{{ item['start_date'] }} - {{ item['end_date'] if item['end_date'] else 'Present' }}</small></td>
+                        <td><a href="/admin/timeline/delete/{{ item['id'] }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')"><i class="fas fa-trash"></i></a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center text-muted">No timeline events added yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
