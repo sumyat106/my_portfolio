@@ -27,7 +27,14 @@ db_config = {
 }
 
 def get_db_connection():
-    return pymysql.connect(**db_config)
+    return pymysql.connect(
+        host='gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
+        user='366vnezXZWXtyot.root',
+        password='QnGz4D4U1M7vgMuv',
+        database='test',
+        port=4000,
+        ssl={'ssl': {}}  # ⚠️ TiDB Cloud အတွက် ဒီစာကြောင်း မဖြစ်မနေ ပါရပါမယ်
+    )
 
 # --- FR-2.1: Custom Middleware (Auth Guard) ---
 def login_required(f):
