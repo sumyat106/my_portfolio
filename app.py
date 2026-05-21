@@ -18,27 +18,31 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # XAMPP MySQL Database Connection Config
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'my_portfolio_db',
-    'autocommit': True
-}
+import os
+import pymysql
 
+# Railway ကပေးတဲ့ DATABASE_URL သို့မဟုတ် သီးသန့် Host, User, Password တွေကို သုံးပါ
+db_config = {
+    'host': os.environ.get('DB_HOST', 'localhost'), # Railway က ပေးတဲ့ Host ကို ထည့်ရပါမယ်
+    'user': os.environ.get('DB_USER'),
+    'password': os.environ.get('DB_PASSWORD'),
+    'database': os.environ.get('DB_NAME'),
+    'port': int(os.environ.get('DB_PORT', 3306))
+}
+# --- Database Connection Config (Railway ပုံစံ) ---
 def get_db_connection():
-    # အကယ်၍ Vercel ပေါ်ရောက်သွားရင် (သို့မဟုတ် အင်တာနက်ပေါ်မှာဆိုရင်) TiDB Cloud ကို သုံးမယ်
-    if os.environ.get('VERCEL') or os.environ.get('PROD_MODE'):
-        return pymysql.connect(
-            host='gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
-            user='366vnezXZWXtyot.root',
-            password='QnGz4D4U1M7vgMuv',
-            database='test',
-            port=4000,
-            ssl={'ssl': {}}
-        )
-    else:
-        return pymysql.connect(**db_config)
+    
+    # Railway တွင် သတ်မှတ်ထားသော Variables များမှ အချက်အလက်ယူခြင်း
+    return pymysql.connect(
+        host=os.environ.get('MYSQLHOST'),
+        user=os.environ.get('MYSQLUSER'),
+        password=os.environ.get('MYSQLPASSWORD'),
+        database=os.environ.get('MYSQLDATABASE'),
+        port=int(os.environ.get('MYSQLPORT', 3306)),
+        cursorclass=pymysql.cursors.DictCursor # ဒီနေရာမှာ DictCursor ကို တခါတည်း ထည့်ပေးထားလို့ရပါတယ်
+    )
+    # else:
+    #     return pymysql.connect(**db_config)
 
 # --- FR-2.1: Custom Middleware (Auth Guard) ---
 def login_required(f):
@@ -401,6 +405,5 @@ def delete_timeline(id):
 
 
 if __name__ == '__main__':
-    # Cloud ပေါ်မှာဆိုရင် Port 8080 (သို့မဟုတ် Server Port) နဲ့ ပတ်မယ်၊ Local ဆိုရင် ပုံမှန်အတိုင်း ပတ်မယ်
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
