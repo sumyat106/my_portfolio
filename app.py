@@ -27,14 +27,18 @@ db_config = {
 }
 
 def get_db_connection():
-    return pymysql.connect(
-        host='gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
-        user='366vnezXZWXtyot.root',
-        password='QnGz4D4U1M7vgMuv',
-        database='test',
-        port=4000,
-        ssl={'ssl': {}}  # ⚠️ TiDB Cloud အတွက် ဒီစာကြောင်း မဖြစ်မနေ ပါရပါမယ်
-    )
+    # အကယ်၍ Vercel ပေါ်ရောက်သွားရင် (သို့မဟုတ် အင်တာနက်ပေါ်မှာဆိုရင်) TiDB Cloud ကို သုံးမယ်
+    if os.environ.get('VERCEL') or os.environ.get('PROD_MODE'):
+        return pymysql.connect(
+            host='gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
+            user='366vnezXZWXtyot.root',
+            password='QnGz4D4U1M7vgMuv',
+            database='test',
+            port=4000,
+            ssl={'ssl': {}}
+        )
+    else:
+        return pymysql.connect(**db_config)
 
 # --- FR-2.1: Custom Middleware (Auth Guard) ---
 def login_required(f):
