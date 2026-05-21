@@ -398,5 +398,9 @@ def delete_timeline(id):
     conn.close()
     flash('Timeline event deleted successfully!', 'success')
     return redirect('/admin/timeline')
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Cloud ပေါ်မှာဆိုရင် Port 8080 (သို့မဟုတ် Server Port) နဲ့ ပတ်မယ်၊ Local ဆိုရင် ပုံမှန်အတိုင်း ပတ်မယ်
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
