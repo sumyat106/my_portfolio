@@ -154,7 +154,7 @@ def admin_login():
         password = request.form.get('password')
         
         # ရိုးရှင်းသော သတ်မှတ်ချက်ဖြင့် စစ်ဆေးခြင်း
-        if username == 'admin' and password == 'admin123':
+        if username == 'suu_myat' and password == 'suu1353@mubF':
             session['logged_in'] = True
             session['username'] = username
             flash('Welcome back, Admin!', 'success')
