@@ -207,9 +207,10 @@ def add_project():
     cursor = conn.cursor()
     sql = "INSERT INTO project (title, description, image, live_url, github_url) VALUES (%s, %s, %s, %s, %s)"
     cursor.execute(sql, (title, description, filename, live_url, github_url))
+    conn.commit()
     cursor.close()
     conn.close()
-    
+  
     flash('Project added successfully!', 'success')
     return redirect('/admin/projects')
 
@@ -219,6 +220,7 @@ def delete_project(id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM project WHERE id = %s", (id,))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Project deleted successfully!', 'success')
@@ -232,6 +234,7 @@ def admin_inbox():
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT * FROM contact_message ORDER BY created_at DESC")
     messages = cursor.fetchall()
+    conn.commit()
     cursor.close()
     conn.close()
     return render_template('admin/inbox.html', messages=messages)
@@ -249,6 +252,7 @@ def toggle_message(id):
     new_status = not current_status
     
     cursor.execute("UPDATE contact_message SET is_read = %s WHERE id = %s", (new_status, id))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Message status updated!', 'success')
@@ -260,6 +264,7 @@ def delete_message(id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM contact_message WHERE id = %s", (id,))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Message deleted!', 'success')
@@ -272,6 +277,7 @@ def admin_skills():
     conn = get_db_connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT * FROM skill ORDER BY category, display_order")
+    conn.commit()
     skills = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -288,6 +294,7 @@ def add_skill():
     cursor = conn.cursor()
     cursor.execute("INSERT INTO skill (name, category, display_order) VALUES (%s, %s, %s)", 
                    (name, category, display_order))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Skill added successfully!', 'success')
@@ -299,6 +306,7 @@ def delete_skill(id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM skill WHERE id = %s", (id,))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Skill deleted successfully!', 'success')
@@ -312,6 +320,7 @@ def admin_timeline():
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT * FROM timeline ORDER BY start_date DESC")
     timelines = cursor.fetchall()
+    conn.commit()
     cursor.close()
     conn.close()
     return render_template('admin/timeline.html', timelines=timelines)
@@ -331,6 +340,7 @@ def add_timeline():
     sql = """INSERT INTO timeline (title, organization, type, start_date, end_date, description) 
              VALUES (%s, %s, %s, %s, %s, %s)"""
     cursor.execute(sql, (title, organization, type_val, start_date, end_date, description))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Timeline event added successfully!', 'success')
@@ -342,6 +352,7 @@ def delete_timeline(id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM timeline WHERE id = %s", (id,))
+    conn.commit()
     cursor.close()
     conn.close()
     flash('Timeline event deleted successfully!', 'success')
