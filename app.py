@@ -17,9 +17,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# XAMPP MySQL Database Connection Config
-import os
-import pymysql
 
 # Railway ကပေးတဲ့ DATABASE_URL သို့မဟုတ် သီးသန့် Host, User, Password တွေကို သုံးပါ
 db_config = {
@@ -31,15 +28,16 @@ db_config = {
 }
 # --- Database Connection Config (Railway ပုံစံ) ---
 def get_db_connection():
-    
-    # Railway တွင် သတ်မှတ်ထားသော Variables များမှ အချက်အလက်ယူခြင်း
+    # Railway ကပေးတဲ့ host ကို အဓိကထားပြီး၊ မရှိရင် localhost အစား တခြားနည်းလမ်းနဲ့ ချိတ်ဖို့ ကြိုးစားပါမယ်
+   
     return pymysql.connect(
-        host=os.environ.get('MYSQLHOST'),
+       # ကုဒ်ထဲတွင် ဒီအတိုင်းဖြစ်ရပါမည်
+        host=os.environ.get('MYSQLHOST', 'mysql.railway.internal'),
         user=os.environ.get('MYSQLUSER'),
         password=os.environ.get('MYSQLPASSWORD'),
         database=os.environ.get('MYSQLDATABASE'),
         port=int(os.environ.get('MYSQLPORT', 3306)),
-        cursorclass=pymysql.cursors.DictCursor # ဒီနေရာမှာ DictCursor ကို တခါတည်း ထည့်ပေးထားလို့ရပါတယ်
+        cursorclass=pymysql.cursors.DictCursor
     )
     # else:
     #     return pymysql.connect(**db_config)
